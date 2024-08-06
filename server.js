@@ -22,7 +22,7 @@ app.use("/out", express.static(path.join(__dirname, "../out")));
 
 //hosting port
 app.get("/", (req, resp) => {
-  resp.sendFile(process.cwd() + "/public/login.htm");
+  resp.sendFile(process.cwd() + "/public/index.htm");
 });
 
 const PORT =  process.env.PORT|| 8000;

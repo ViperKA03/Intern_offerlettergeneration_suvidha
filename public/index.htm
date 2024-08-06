@@ -24,6 +24,7 @@
 </head>
 
 <body>
+  <button type="button" class="btn btn-danger logout-button" id="logoutButton">Logout</button>
   <div class="spinner-overlay">
     <div class="spinner"></div>
   </div>
@@ -150,11 +151,57 @@
 
 
     $(document).ready(() => {
+      const sessionToken = sessionStorage.getItem('sessionToken');
+      const isLoggedIn = !!sessionToken;
+
+
+      const path = window.location.pathname;
+
+      // Redirect logic
+      if (!isLoggedIn && path !== '/login.htm') {
+        // If not logged in and not on the login page, redirect to login page
+        window.location.href = 'login.htm';
+      } else if (isLoggedIn && path === '/login.htm') {
+        // If logged in and on the login page, redirect to index page
+        window.location.href = 'index.htm';
+      }
+
+      const SESSION_TIMEOUT = 10 * 60 * 1000; 
+      let sessionTimeout;
+
+      // Check if user is already logged in
+      if (!sessionStorage.getItem('sessionToken')) {
+        // No session token found, redirect to login page
+        console.log('No session token found. Redirecting to login...');
+        window.location.href = 'login.htm';
+      } else {
+        // Session token exists, start session timer
+        console.log('Session token found. Starting session timer...');
+        startSessionTimer();
+      }
+
+      function startSessionTimer() {
+        clearTimeout(sessionTimeout);
+        sessionTimeout = setTimeout(logout, SESSION_TIMEOUT);
+      }
+
+      function logout() {
+        console.log('Session expired. Logging out...');
+        sessionStorage.removeItem('sessionToken');
+        window.location.href = 'login.htm'; // Redirect to login page
+      }
+
+
+      //logout
+      $("#logoutButton").click(function () {
+         
+         logout()
+      });
 
       function fetchLatestUID() {
         $.ajax({
           type: "GET",
-          url: "http://localhost:8000/api/latest-uid", // Replace with your API endpoint
+          url: "http://localhost:8000/api/latest-uid", 
           dataType: "json",
           success: function (response) {
             $("#inputUID").val(response.uid);

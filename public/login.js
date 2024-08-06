@@ -1,5 +1,3 @@
-// script.js
-
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('loginForm');
     const username = document.getElementById('username');
@@ -8,12 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const passwordError = document.getElementById('passwordError');
     const loginStatus = document.getElementById('loginStatus');
 
-    // Set session timeout (e.g., 5 minutes)
-    const SESSION_TIMEOUT = 10 * 60 * 1000; // 5 minutes in milliseconds
+    // Set session timeout to 6 seconds (0.1 minutes)
+    const SESSION_TIMEOUT = 0.1 * 60 * 1000; // 6 seconds in milliseconds
     let sessionTimeout;
 
     // Check if user is already logged in
     if (sessionStorage.getItem('sessionToken')) {
+        console.log('Session token found. Redirecting to index...');
+        startSessionTimer(); // Start session timer if a session token exists
         redirectToIndex();
     }
 
@@ -47,8 +47,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 sessionStorage.setItem('sessionToken', sessionToken);
                 loginStatus.textContent = 'Login successful!';
                 loginStatus.style.color = 'green';
+                console.log('Login successful. Starting session timer...');
+                startSessionTimer(); // Start session timer on login
                 setTimeout(redirectToIndex, 500); // Delay to show the success message
-                startSessionTimer();
             } else {
                 loginStatus.textContent = 'Invalid username or password.';
                 loginStatus.style.color = 'red';
@@ -70,10 +71,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function startSessionTimer() {
         clearTimeout(sessionTimeout);
-        sessionTimeout = setTimeout(logout, SESSION_TIMEOUT);
+        sessionTimeout = setTimeout(() => {
+            console.log('Session expired. Logging out...');
+            logout();
+        }, SESSION_TIMEOUT);
+        console.log('Session timer started for', SESSION_TIMEOUT, 'milliseconds');
     }
 
     function logout() {
+        console.log('Logging out...');
         sessionStorage.removeItem('sessionToken');
         window.location.href = 'login.htm'; // Redirect to login page
     }

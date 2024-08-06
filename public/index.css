@@ -57,3 +57,9 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+.logout-button {
+  position: fixed;
+  top: 10px;  /* Adjust the top position as needed */
+  right: 10px; /* Adjust the right position as needed */
+  z-index: 1000; /* Ensure it appears above other content */
+}
